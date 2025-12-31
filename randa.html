@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bassam 👈🏻</title>
+    
+    <!-- استيراد خطوط أنيقة -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            /* --- خلفية صورة ثابتة بدون أي تعتيم --- */
+            background-image: url('https://picsum.photos/seed/nebula-space/1920/1080.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Tajawal', sans-serif;
+            position: relative;
+        }
+
+        /* --- عناصر الخلفية الصورية --- */
+        .space-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .moon {
+            position: absolute;
+            top: 10%;
+            left: 8%;
+            width: 15vw;
+            max-width: 120px;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+        }
+
+        .planet {
+            position: absolute;
+            bottom: 15%;
+            right: 10%;
+            width: 20vw;
+            max-width: 150px;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(200, 150, 255, 0.4);
+        }
+
+        /* --- الكانفاس --- */
+        #mainCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        /* --- الرسالة الأولى --- */
+        .message-container {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            text-align: center;
+            width: 90%;
+            opacity: 0;
+            animation: fadeInUp 1.5s forwards;
+            animation-delay: 1.8s; 
+        }
+
+        .english-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(1.8rem, 8vw, 3.5rem);
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            margin-bottom: 5px;
+            animation: textGlow 3s ease-in-out infinite;
+            animation-delay: 3s;
+        }
+
+        .arabic-text {
+            font-family: 'Tajawal', sans-serif;
+            font-size: clamp(1rem, 4.5vw, 1.8rem);
+            color: #f0f0f0;
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+        }
+
+        /* --- تصميم فقاعة الحوار الجديدة --- */
+        .bubble-message {
+            position: absolute;
+            top: 15%;
+            left: 25%;
+            z-index: 4;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 15px 25px;
+            border-radius: 20px;
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+            opacity: 0; /* تبدأ مخفية */
+            transform: scale(0.5);
+            transition: all 0.5s ease-out;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ذيل الفقاعة */
+        .bubble-message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-top-color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* --- الفقاعات الطائرة --- */
+        .bubble {
+            position: absolute;
+            bottom: -100px; /* تبدأ من تحت الشاشة */
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: floatUp 8s infinite ease-in;
+        }
+
+        @keyframes floatUp {
+            0% {
+                bottom: -100px;
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                bottom: 110%; /* تخرج من أعلى الشاشة */
+                opacity: 0;
+            }
+        }
+
+        /* --- تعريف الأنيميشنات --- */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(0, 0, 0, 0.7), 0 0 15px rgba(255, 100, 150, 0.8); }
+            50% { text-shadow: 0 0 25px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 100, 150, 1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- خلفية العناصر الصورية -->
+    <div class="space-background">
+        <img src="https://picsum.photos/seed/moon-closeup/120/120.jpg" alt="Moon" class="moon">
+        <img src="https://picsum.photos/seed/planet-purple/150/150.jpg" alt="Planet" class="planet">
+    </div>
+
+    <!-- الكانفاس -->
+    <canvas id="mainCanvas"></canvas>
+
+    <!-- الرسالة الأولى -->
+    <div class="message-container">
+        <div class="english-text">Stay With Me in 2026</div>
+        <div class="arabic-text">ابقَ معي في عام ٢٠٢٦</div>
+    </div>
+
+    <!-- فقاعة الحوار الجديدة -->
+    <div class="bubble-message" id="bubbleMessage">
+        Happy New Year Randa ❤️
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        const bubbleMessageEl = document.getElementById('bubbleMessage');
+
+        let animationProgress = 0;
+        const animationSpeed = 0.07;
+        let scale = 1;
+        let heartPath = [];
+        let backgroundStars = [];
+        let heartStars = [];
+        let isAnimating = true;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            scale = Math.min(canvas.width, canvas.height) / 40;
+            createStars();
+            calculateHeartPath();
+        }
+
+        function createStars() {
+            backgroundStars = [];
+            heartStars = [];
+            
+            for (let i = 0; i < 80; i++) {
+                backgroundStars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5,
+                    brightness: Math.random()
+                });
+            }
+
+            for (let i = 0; i < 100; i++) {
+                heartStars.push({
+                    x: (Math.random() - 0.5) * scale * 35,
+                    y: (Math.random() - 0.5) * scale * 35,
+                    size: Math.random() * 2 + 0.5,
+                    twinkleSpeed: Math.random() * 0.05 + 0.01
+                });
+            }
+        }
+
+        function getHeartPoint(t) {
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+            return { x: x * scale, y: y * scale };
+        }
+
+        function calculateHeartPath() {
+            heartPath = [];
+            for (let t = 0; t <= Math.PI * 2; t += 0.01) {
+                heartPath.push(getHeartPoint(t));
+            }
+        }
+
+        // --- دالة إنشاء الفقاعات الطائرة ---
+        function createFloatingBubbles() {
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'bubble';
+                    
+                    const size = Math.random() * 40 + 20; // حجم عشوائي
+                    bubble.style.width = size + 'px';
+                    bubble.style.height = size + 'px';
+                    bubble.style.left = Math.random() * 100 + '%'; // موقع عشوائي
+                    bubble.style.animationDuration = (Math.random() * 3 + 5) + 's'; // سرعة عشوائية
+                    bubble.style.animationDelay = Math.random() * 2 + 's'; // تأخير عشوائي
+                    
+                    document.body.appendChild(bubble);
+                    
+                    // إزالة الفقاعة من الـ DOM بعد انتهاء الأنيميشن لتوفير الذاكرة
+                    setTimeout(() => bubble.remove(), 8000);
+                }, i * 300); // إنشاء فقاعة جديدة كل 300 ميلي ثانية
+            }
+        }
+
+        function draw() {
+            // --- تم حذف الظل الأسود المزعج ---
+            // ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            // ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            backgroundStars.forEach(star => {
+                star.brightness += (Math.random() - 0.5) * 0.1;
+                star.brightness = Math.max(0.2, Math.min(1, star.brightness));
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height / 3);
+
+            if (animationProgress > 0) {
+                const pointsToDraw = Math.floor(animationProgress * 100);
+                
+                ctx.strokeStyle = 'rgba(255, 120, 180, 0.9)';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.shadowBlur = 35;
+                ctx.shadowColor = '#ff78b4';
+                
+                ctx.beginPath();
+                for (let i = 0; i <= pointsToDraw; i++) {
+                    const point = heartPath[i];
+                    if (i === 0) ctx.moveTo(point.x, point.y);
+                    else ctx.lineTo(point.x, point.y);
+                }
+                ctx.stroke();
+                
+                ctx.clip();
+                
+                heartStars.forEach(star => {
+                    const brightness = (Math.sin(Date.now() * star.twinkleSpeed) + 1) / 2;
+                    ctx.fillStyle = `rgba(255, 220, 250, ${brightness * 0.9})`;
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                ctx.shadowBlur = 0;
+            }
+            
+            ctx.restore();
+
+            if (isAnimating) {
+                animationProgress += animationSpeed;
+                if (animationProgress > Math.PI * 2) {
+                    isAnimating = false;
+                    
+                    // --- إظهار الفقاعة والفقاعات الطائرة بعد اكتمال القلب ---
+                    setTimeout(() => {
+                        bubbleMessageEl.style.opacity = '1';
+                        bubbleMessageEl.style.transform = 'scale(1)';
+                        createFloatingBubbles();
+                    }, 1000); // تظهر بعد ثانية من اكتمال القلب
+                }
+                requestAnimationFrame(draw);
+            }
+        }
+
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            draw();
+        });
+
+        window.addEventListener('resize', resizeCanvas);
+    </script>
+</body>
+  </html>
